@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appartement Signature | Plan du quartier</title>
+
+    <!-- Métadonnées -->
+    <meta name="description" content="Appartement Signature — Localisez le logement et découvrez les monuments à visiter à proximité.">
+    <meta name="keywords" content="location appartement, studio Paris, Scriptoleon, demonstration">
+    <meta name="author" content="Appartement Signature">
+    <meta name="language" content="fr">
+    <meta name="theme-color" content="#4A3428">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Appartement Signature | Plan du quartier">
+    <meta property="og:description" content="Localisez le logement et découvrez les monuments à visiter à proximité.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://votre-site-ici.github.io/plan_du_quartier.html">
+    <meta property="og:image" content="https://votre-site-ici.github.io/images/og-image.png">
+    <meta property="og:image:secure_url" content="https://votre-site-ici.github.io/images/og-image.png">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Appartement Signature | Plan du quartier">
+    <meta name="twitter:description" content="Localisez le logement et découvrez les monuments à visiter à proximité.">
+    <meta name="twitter:image" content="https://votre-site-ici.github.io/images/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- Feuille de styles -->
+    <link rel="stylesheet" href="styles.css?v=131">
+
+    <!-- Leaflet CSS (gratuit, open source) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" >
+
+    <style>
+        /* Ajustements spécifiques à Leaflet */
+        #map {
+            /* Écrase le placeholder, Leaflet gère son propre rendu */
+            background: #e8e0d8;
+            padding: 0 !important;
+        }
+        /* Popup Leaflet dans les couleurs du site */
+        /* Forcer l'attribution Leaflet sous le menu */
+        .leaflet-control-attribution {
+            z-index: 1 !important;
+        }
+        .leaflet-control-container {
+            z-index: 1 !important;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            border-left: 4px solid var(--couleur-accent);
+            font-family: 'Georgia', serif;
+        }
+        .leaflet-popup-content strong {
+            color: var(--couleur-principale);
+        }
+        .leaflet-popup-content small {
+            color: #6b5040;
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête fixe -->
+    <header>
+        <div class="bandeau">
+            <div class="burger-menu" id="burger" aria-label="Menu" role="button" tabindex="0">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <!-- Menu déroulant -->
+            <nav>
+    <div class="menu-drawer" id="menuDrawer" aria-hidden="true">
+        <!-- Croix de fermeture -->
+        <div class="close-cross" id="closeCross" aria-label="Fermer le menu" role="button" tabindex="0">
+            <img src="images/croix.png" alt="Fermer" class="croix-image">
+        </div>
+        <!-- Menu principal -->
+        <ul class="menu">
+            <li><a href="index.html">Accueil</a></li>
+            <li>
+                  <a href="proximite.html">À proximité</a>
+                  <ul class="submenu">
+                         <li><a href="proximite.html?slide=0">Le moulin rouge</a></li>
+                         <li><a href="proximite.html?slide=1">Le palais Garnier</a></li>
+                         <li><a href="proximite.html?slide=2">Eglise de la Ste Trinité</a></li>
+                         <li><a href="proximite.html?slide=3">Musée du parfum Fragonard</a></li>
+                         <li><a href="proximite.html?slide=4">Galerie Lafayette</a></li>
+                         <li><a href="proximite.html?slide=5">La maison Bélanger</a></li>
+                         <li><a href="proximite.html?slide=6">L'hotel Drouot</a></li>
+                         <li><a href="proximite.html?slide=7">Le paradox museum Paris</a></li>
+                         <li><a href="proximite.html?slide=8">Passage couvert de Paris</a></li>
+                         <li><a href="proximite.html?slide=9">Place Edouard VII</a></li>
+                         <li><a href="proximite.html?slide=10">Grand rex</a></li>
+                         <li><a href="proximite.html?slide=11">Montmartre</a></li>
+                         <li><a href="proximite.html?slide=12">Musée Grévin</a></li>
+                    </ul>
+            </li>
+            <li><a href="plan_du_quartier.html">Plan du quartier</a></li>
+            <li><a href="tarifs.html">Tarifs</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </div>
+          </nav>
+        </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="content">
+
+        <!-- Titre -->
+        <section class="intro pdq-intro">
+            <h1>Plan du quartier</h1>
+            <p>Localisez le studio et découvrez les monuments à visiter à proximité.<br>
+               Cliquez sur un point de la liste pour le retrouver sur la carte.</p>
+        </section>
+
+        <!-- Légende -->
+        <div class="pdq-legende">
+            <div class="pdq-legende-item">
+                <div class="pdq-dot pdq-dot--studio"></div>
+                <span>Le studio</span>
+            </div>
+            <div class="pdq-legende-item">
+                <div class="pdq-dot pdq-dot--monument"></div>
+                <span>Points d'intérêt</span>
+            </div>
+        </div>
+
+        <!-- Carte + liste -->
+        <div class="pdq-wrapper">
+
+            <!-- Carte Leaflet / OpenStreetMap -->
+            <div id="map" class="pdq-map"></div>
+
+            <!-- Liste des POI -->
+            <div class="pdq-liste" id="poiListe">
+                <!-- Généré par JavaScript -->
+            </div>
+
+        </div>
+
+        <!-- Boutons défilement -->
+        <div id="scrollButtons">
+            <button id="scrollTop" class="scroll-btn">
+                <img src="images/haut.png" alt="Haut">
+            </button>
+            <button id="scrollBottom" class="scroll-btn">
+                <img src="images/bas.png" alt="Bas">
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Pied de page -->
+    <footer id="footer">
+        <div class="social-buttons">
+            <a class="social-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fvotre-site-ici.github.io%2F" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Facebook">
+                <svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" viewBox="0 0 48 48" aria-hidden="true">
+                    <linearGradient id="grad" x1="6.228" x2="42.077" y1="4.896" y2="43.432" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="#0d61a9"></stop>
+                        <stop offset="1" stop-color="#16528c"></stop>
+                    </linearGradient>
+                    <path fill="url(#grad)" d="M42,40c0,1.105-0.895,2-2,2H8c-1.105,0-2-0.895-2-2V8c0-1.105,0.895-2,2-2h32c1.105,0,2,0.895,2,2V40z"></path>
+                    <path d="M25,38V27h-4v-6h4v-2.138c0-5.042,2.666-7.818,7.505-7.818c1.995,0,3.077,0.14,3.598,0.208l0.858,0.111L37,12.224L37,17h-3.635C32.237,17,32,18.378,32,19.535V21h4.723l-0.928,6H32v11H25z" opacity=".05"></path>
+                    <path d="M25,38V27h-4v-6h4v-2.138c0-5.042,2.666-7.818,7.505-7.818c1.995,0,3.077,0.14,3.598,0.208l0.858,0.111L37,12.224L37,17h-3.635C32.237,17,32,18.378,32,19.535V21h4.723l-0.928,6H32v11H25z" opacity=".07"></path>
+                    <path fill="var(--couleur-blanc)" d="M25,38V27h-4v-6h4v-2.138c0-5.042,2.666-7.817,7.505-7.817c1.995,0,3.077,0.14,3.598,0.208l0.858,0.111L37,12.226V17h-3.635C32.237,17,32,18.378,32,19.535V21h4.723l-0.928,6H32v11H25z"></path>
+                </svg>
+            </a>
+            <a class="social-btn x" href="https://twitter.com/intent/tweet?text=Decouvrez%20ce%20site%20cree%20automatiquement%20avec%20Scriptoleon" target="_blank" rel="noopener noreferrer" aria-label="Partager sur Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="var(--couleur-blanc)">
+                    <path d="M14.095479,10.316482L22.286354,1h-1.940718l-7.115352,8.087682L7.551414,1H1l8.589488,12.231093L1,23h1.940717  l7.509372-8.542861L16.448587,23H23L14.095479,10.316482z M11.436522,13.338465l-0.871624-1.218704l-6.924311-9.68815h2.981339  l5.58978,7.82155l0.867949,1.218704l7.26506,10.166271h-2.981339L11.436522,13.338465z"/>
+                </svg>
+            </a>
+            <a class="social-btn validation" href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fvotre-site-ici.github.io%2F%2Fplan_du_quartier.html" target="_blank" rel="noopener noreferrer" aria-label="Valider le site W3C">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+                    <rect width="64" height="64" fill="var(--couleur-blanc)" rx="8" ry="8" stroke="#000" stroke-width="2"/>
+                    <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="24" fill="#0066CC" dominant-baseline="middle" text-anchor="middle" font-weight="bold">W3C</text>
+                </svg>
+            </a>
+        </div>
+        <p>
+			&copy; 2026 votre-site-ici.github.io<br>
+			Tous droits réservés. Design et contenu créés par<br>
+			<i>Scriptoleon.</i>
+        </p>
+    </footer>
+
+    <!-- ══════════════════════════════════════════════
+         DONNÉES DES POINTS D'INTÉRÊT
+         ══════════════════════════════════════════════ -->
+    <script>
+        const POINTS = [
+            {
+                id: 'studio',
+                nom: 'Exemple de logement',
+                lat: 48.8700,
+                lng: 2.3300,
+                type: 'studio',
+                info: 'Emplacement fictif pour la demonstration'
+            },
+            { id:1, nom: 'Point d'interet 1', lat: 48.8741, lng: 2.3250, type:'monument', info:'Exemple : 5 min a pied' },
+            { id:2, nom: 'Point d'interet 2', lat: 48.8720, lng: 2.3280, type:'monument', info:'Exemple : 8 min a pied' },
+            { id:3, nom: 'Point d'interet 3', lat: 48.8690, lng: 2.3310, type:'monument', info:'Exemple : 10 min a pied' },
+            { id:4, nom: 'Point d'interet 4', lat: 48.8760, lng: 2.3340, type:'monument', info:'Exemple : 3 min a pied' },
+            { id:5, nom: 'Point d'interet 5', lat: 48.8730, lng: 2.3200, type:'monument', info:'Exemple : 12 min a pied' },
+            { id:6, nom: 'Point d'interet 6', lat: 48.8710, lng: 2.3360, type:'monument', info:'Exemple : 6 min a pied' },
+            { id:7, nom: 'Point d'interet 7', lat: 48.8680, lng: 2.3230, type:'monument', info:'Exemple : 15 min a pied' },
+            { id:8, nom: 'Point d'interet 8', lat: 48.8750, lng: 2.3180, type:'monument', info:'Exemple : 9 min a pied' },
+            { id:9, nom: 'Point d'interet 9', lat: 48.8705, lng: 2.3395, type:'monument', info:'Exemple : 7 min a pied' },
+            { id:10, nom: 'Point d'interet 10', lat: 48.8670, lng: 2.3270, type:'monument', info:'Exemple : 11 min a pied' },
+            { id:11, nom: 'Point d'interet 11', lat: 48.8770, lng: 2.3410, type:'monument', info:'Exemple : 14 min a pied' },
+            { id:12, nom: 'Point d'interet 12', lat: 48.8660, lng: 2.3350, type:'monument', info:'Exemple : 18 min a pied' },
+            { id:13, nom: 'Point d'interet 13', lat: 48.8695, lng: 2.3155, type:'monument', info:'Exemple : 13 min a pied' },
+            { id:14, nom: 'Point supplementaire', lat: 48.8715, lng: 2.3245, type:'monument', info:'Exemple de point supplementaire sur la carte' },
+        ];
+
+        /* ── Génère la liste latérale ── */
+        const liste = document.getElementById('poiListe');
+        POINTS.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'pdq-item' + (p.type === 'studio' ? ' pdq-item--studio' : '');
+            div.dataset.id = p.id;
+            div.innerHTML = `
+                <div class="pdq-num">${p.type === 'studio' ? '★' : i}</div>
+                <div class="pdq-nom">${p.nom}</div>
+            `;
+            div.addEventListener('click', () => {
+                document.querySelectorAll('.pdq-item').forEach(el => el.classList.remove('pdq-item--actif'));
+                div.classList.add('pdq-item--actif');
+                if (window.leafletMap && window.leafletMarkers && window.leafletMarkers[p.id]) {
+                    window.leafletMap.setView([p.lat, p.lng], 16);
+                    window.leafletMarkers[p.id].openPopup();
+                }
+            });
+            liste.appendChild(div);
+        });
+
+        /* ── Année footer ── */
+        const yearEl = document.getElementById('year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+    </script>
+
+    <!-- ══════════════════════════════════════════════
+         LEAFLET / OPENSTREETMAP — Gratuit, sans clé
+         ══════════════════════════════════════════════ -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        /* ── Initialisation de la carte Leaflet ── */
+        window.leafletMap = L.map('map', {
+            center: [48.8700, 2.3300],
+            zoom: 15,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+
+        /* Fond de carte OpenStreetMap (gratuit) */
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(window.leafletMap);
+
+        /* ── Création des marqueurs ── */
+        window.leafletMarkers = {};
+
+        POINTS.forEach(p => {
+            const isStudio = p.type === 'studio';
+
+            /* Marqueur SVG circulaire (rouge pour studio, doré pour monuments) */
+            const markerHtml = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="${isStudio ? 28 : 22}" height="${isStudio ? 28 : 22}" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"
+                        fill="${isStudio ? 'var(--couleur-alerte)' : 'var(--couleur-accent)'}"
+                        stroke="var(--couleur-blanc)" stroke-width="2.5"/>
+                    ${isStudio ? '<text x="12" y="17" text-anchor="middle" font-size="11" fill="var(--couleur-blanc)" font-family="sans-serif">★</text>' : ''}
+                </svg>`;
+
+            const icon = L.divIcon({
+                html: markerHtml,
+                className: '',
+                iconSize: isStudio ? [28, 28] : [22, 22],
+                iconAnchor: isStudio ? [14, 14] : [11, 11],
+                popupAnchor: [0, isStudio ? -16 : -13]
+            });
+
+            const marker = L.marker([p.lat, p.lng], {
+                icon,
+                title: p.nom,
+                zIndexOffset: isStudio ? 1000 : 0
+            }).addTo(window.leafletMap);
+
+            marker.bindPopup(`
+                <div style="font-family:Georgia,serif;padding:2px 4px;min-width:180px;">
+                    <strong style="color:var(--couleur-principale);font-size:0.9rem;">${p.nom}</strong><br>
+                    <small style="color:#6b5040;">${p.info}</small>
+                </div>
+            `);
+
+            /* Synchronise le clic sur le marqueur avec la liste */
+            marker.on('click', () => {
+                document.querySelectorAll('.pdq-item').forEach(el => el.classList.remove('pdq-item--actif'));
+                const el = document.querySelector(`.pdq-item[data-id="${p.id}"]`);
+                if (el) {
+                    el.classList.add('pdq-item--actif');
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+
+            window.leafletMarkers[p.id] = marker;
+        });
+    </script>
+
+    <!-- Scripts défilement -->
+    <script>
+        document.getElementById('scrollTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        });
+        document.getElementById('scrollBottom').addEventListener('click', () => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
+        });
+    </script>
+
+    <!-- Script menu burger -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const burger = document.getElementById('burger');
+            const menuDrawer = document.getElementById('menuDrawer');
+            const closeCross = document.getElementById('closeCross');
+
+            burger.addEventListener('click', () => {
+                const isActive = menuDrawer.classList.toggle('active');
+                menuDrawer.setAttribute('aria-hidden', String(!isActive));
+            });
+
+            closeCross.addEventListener('click', () => {
+                closeCross.classList.add('rotating');
+                closeCross.addEventListener('animationend', () => {
+                    closeCross.classList.remove('rotating');
+                    menuDrawer.classList.remove('active');
+                    menuDrawer.setAttribute('aria-hidden', 'true');
+                }, { once: true });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!menuDrawer.contains(e.target) && !burger.contains(e.target)) {
+                    menuDrawer.classList.remove('active');
+                    menuDrawer.setAttribute('aria-hidden', 'true');
+                }
+            });
+        });
+    </script>
+
+
+    <!-- Script submenu tactile mobile -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const items = document.querySelectorAll("ul.menu > li");
+            items.forEach(li => {
+                const submenu = li.querySelector("ul.submenu");
+                const link = li.querySelector(":scope > a");
+                if (!submenu || !link) return;
+
+                link.addEventListener("click", (e) => {
+                    // Desktop avec hover : comportement normal
+                    if (window.matchMedia("(hover: hover)").matches) return;
+                    // Mobile : 1er tap ouvre, 2ème tap navigue
+                    if (!li.classList.contains("submenu-open")) {
+                        e.preventDefault();
+                        document.querySelectorAll("ul.menu > li.submenu-open").forEach(el => {
+                            if (el !== li) el.classList.remove("submenu-open");
+                        });
+                        li.classList.add("submenu-open");
+                    }
+                });
+
+                document.addEventListener("click", (e) => {
+                    if (!li.contains(e.target)) {
+                        li.classList.remove("submenu-open");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
